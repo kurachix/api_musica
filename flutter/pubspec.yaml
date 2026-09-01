@@ -1,4 +1,4 @@
-name: flutter_camada
+name: flutter_musica
 description: Camada de comunicacao com a API de Musicas usando GetConnect
 publish_to: 'none'
 version: 1.0.0+1
