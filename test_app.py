@@ -2,7 +2,7 @@ import pytest
 from fastapi.testclient import TestClient
 from app import app, banco_musicas
 
-client = TestClient(app)
+cliente = TestClient(app)
 
 @pytest.fixture(autouse=True)
 def restaurar_banco():
@@ -17,50 +17,50 @@ def restaurar_banco():
 
 
 def test_listar_todas_as_musicas():
-    response = client.get("/musicas")
-    assert response.status_code == 200
-    dados = response.json()
+    resposta = cliente.get("/musicas")
+    assert resposta.status_code == 200
+    dados = resposta.json()
     assert len(dados) == 5
     assert dados[0]["titulo"] == "Numb"
 
 
 def test_buscar_musica_por_id_sucesso():
-    response = client.get("/musicas/1")
-    assert response.status_code == 200
-    dados = response.json()
+    resposta = cliente.get("/musicas/1")
+    assert resposta.status_code == 200
+    dados = resposta.json()
     assert dados["id"] == 1
     assert dados["titulo"] == "Numb"
 
 
 def test_buscar_musica_por_id_inexistente():
-    response = client.get("/musicas/999")
-    assert response.status_code == 404
-    assert response.json()["detail"] == "Música com ID 999 não encontrada."
+    resposta = cliente.get("/musicas/999")
+    assert resposta.status_code == 404
+    assert resposta.json()["detail"] == "Música com ID 999 não encontrada."
 
 
 def test_cadastrar_nova_musica_sucesso():
     nova_musica = {
-        "titulo": "In the End",
-        "artista": "Linkin Park",
-        "album": "Hybrid Theory",
-        "ano": 2000
+        "titulo": "Cheia de Manias",
+        "artista": "Raça Negra",
+        "album": "Raça Negra",
+        "ano": 1992
     }
-    response = client.post("/musicas", json=nova_musica)
-    assert response.status_code == 201
-    dados = response.json()
+    resposta = cliente.post("/musicas", json=nova_musica)
+    assert resposta.status_code == 201
+    dados = resposta.json()
     assert dados["id"] is not None
-    assert dados["titulo"] == "In the End"
-    assert dados["artista"] == "Linkin Park"
-    assert dados["album"] == "Hybrid Theory"
-    assert dados["ano"] == 2000
+    assert dados["titulo"] == "Cheia de Manias"
+    assert dados["artista"] == "Raça Negra"
+    assert dados["album"] == "Raça Negra"
+    assert dados["ano"] == 1992
 
 
 def test_cadastrar_musica_dados_invalidos():
     dados_invalidos = {
         "titulo": "Música Incompleta"
     }
-    response = client.post("/musicas", json=dados_invalidos)
-    assert response.status_code == 422
+    resposta = cliente.post("/musicas", json=dados_invalidos)
+    assert resposta.status_code == 422
 
 
 def test_atualizar_musica_existente():
@@ -68,9 +68,9 @@ def test_atualizar_musica_existente():
         "titulo": "Tempo Perdido (Ao Vivo)",
         "ano": 1998
     }
-    response = client.put("/musicas/3", json=dados_atualizados)
-    assert response.status_code == 200
-    dados = response.json()
+    resposta = cliente.put("/musicas/3", json=dados_atualizados)
+    assert resposta.status_code == 200
+    dados = resposta.json()
     assert dados["id"] == 3
     assert dados["titulo"] == "Tempo Perdido (Ao Vivo)"
     assert dados["artista"] == "Legião Urbana"
@@ -78,18 +78,18 @@ def test_atualizar_musica_existente():
 
 
 def test_atualizar_musica_inexistente():
-    response = client.put("/musicas/999", json={"titulo": "Inexistente"})
-    assert response.status_code == 404
+    resposta = cliente.put("/musicas/999", json={"titulo": "Inexistente"})
+    assert resposta.status_code == 404
 
 
 def test_excluir_musica_sucesso():
-    response = client.delete("/musicas/1")
-    assert response.status_code == 204
+    resposta = cliente.delete("/musicas/1")
+    assert resposta.status_code == 204
     
-    response_busca = client.get("/musicas/1")
-    assert response_busca.status_code == 404
+    resposta_busca = cliente.get("/musicas/1")
+    assert resposta_busca.status_code == 404
 
 
 def test_excluir_musica_inexistente():
-    response = client.delete("/musicas/999")
-    assert response.status_code == 404
+    resposta = cliente.delete("/musicas/999")
+    assert resposta.status_code == 404

@@ -2,9 +2,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_musica/model/musica.dart';
 
 void main() {
-  group('Testes do Model Musica', () {
-    test('Teste fromJson', () {
-      final json = {
+  group('Testes do Modelo Música', () {
+    test('Conversão a partir de JSON (fromJson)', () {
+      final mapaJson = {
         'id': 1,
         'titulo': 'Numb',
         'artista': 'Linkin Park',
@@ -12,7 +12,7 @@ void main() {
         'ano': 2003,
       };
 
-      final musica = Musica.fromJson(json);
+      final musica = Musica.fromJson(mapaJson);
 
       expect(musica.id, 1);
       expect(musica.titulo, 'Numb');
@@ -21,7 +21,7 @@ void main() {
       expect(musica.ano, 2003);
     });
 
-    test('Teste toJson', () {
+    test('Conversão para JSON (toJson)', () {
       final musica = Musica(
         id: 1,
         titulo: 'Numb',
@@ -30,17 +30,17 @@ void main() {
         ano: 2003,
       );
 
-      final json = musica.toJson();
+      final mapaJson = musica.toJson();
 
-      expect(json['id'], 1);
-      expect(json['titulo'], 'Numb');
-      expect(json['artista'], 'Linkin Park');
-      expect(json['album'], 'Meteora');
-      expect(json['ano'], 2003);
+      expect(mapaJson['id'], 1);
+      expect(mapaJson['titulo'], 'Numb');
+      expect(mapaJson['artista'], 'Linkin Park');
+      expect(mapaJson['album'], 'Meteora');
+      expect(mapaJson['ano'], 2003);
     });
 
-    test('Teste de conversão JSON -> Musica -> JSON', () {
-      final jsonOriginal = {
+    test('Consistência do ciclo JSON -> Música -> JSON', () {
+      final mapaOriginal = {
         'id': 2,
         'titulo': 'Evidências',
         'artista': 'Chitãozinho & Xororó',
@@ -48,15 +48,15 @@ void main() {
         'ano': 1990,
       };
 
-      final musica = Musica.fromJson(jsonOriginal);
-      final jsonFinal = musica.toJson();
+      final musica = Musica.fromJson(mapaOriginal);
+      final mapaFinal = musica.toJson();
 
-      expect(jsonFinal, equals(jsonOriginal));
-      expect(jsonFinal['id'], jsonOriginal['id']);
-      expect(jsonFinal['titulo'], jsonOriginal['titulo']);
-      expect(jsonFinal['artista'], jsonOriginal['artista']);
-      expect(jsonFinal['album'], jsonOriginal['album']);
-      expect(jsonFinal['ano'], jsonOriginal['ano']);
+      expect(mapaFinal, equals(mapaOriginal));
+      expect(mapaFinal['id'], mapaOriginal['id']);
+      expect(mapaFinal['titulo'], mapaOriginal['titulo']);
+      expect(mapaFinal['artista'], mapaOriginal['artista']);
+      expect(mapaFinal['album'], mapaOriginal['album']);
+      expect(mapaFinal['ano'], mapaOriginal['ano']);
     });
   });
 }
