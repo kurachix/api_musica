@@ -57,7 +57,7 @@ def test_cadastrar_nova_musica_sucesso():
 
 def test_cadastrar_musica_dados_invalidos():
     dados_invalidos = {
-        "titulo": "Música Sem Artista"
+        "titulo": "Música Incompleta"
     }
     response = client.post("/musicas", json=dados_invalidos)
     assert response.status_code == 422
