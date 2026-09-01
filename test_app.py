@@ -8,9 +8,11 @@ client = TestClient(app)
 def restaurar_banco():
     banco_musicas.clear()
     banco_musicas.extend([
-        {"id": 1, "titulo": "Evidências", "artista": "Chitãozinho & Xororó", "album": "Cowboy do Asfalto", "ano": 1990},
-        {"id": 2, "titulo": "Tempo Perdido", "artista": "Legião Urbana", "album": "Dois", "ano": 1986},
-        {"id": 3, "titulo": "Águas de Março", "artista": "Elis Regina e Tom Jobim", "album": "Elis & Tom", "ano": 1974},
+        {"id": 1, "titulo": "Numb", "artista": "Linkin Park", "album": "Meteora", "ano": 2003},
+        {"id": 2, "titulo": "Evidências", "artista": "Chitãozinho & Xororó", "album": "Cowboy do Asfalto", "ano": 1990},
+        {"id": 3, "titulo": "Tempo Perdido", "artista": "Legião Urbana", "album": "Dois", "ano": 1986},
+        {"id": 4, "titulo": "Bohemian Rhapsody", "artista": "Queen", "album": "A Night at the Opera", "ano": 1975},
+        {"id": 5, "titulo": "Águas de Março", "artista": "Elis Regina e Tom Jobim", "album": "Elis & Tom", "ano": 1974},
     ])
 
 
@@ -18,8 +20,8 @@ def test_listar_todas_as_musicas():
     response = client.get("/musicas")
     assert response.status_code == 200
     dados = response.json()
-    assert len(dados) == 3
-    assert dados[0]["titulo"] == "Evidências"
+    assert len(dados) == 5
+    assert dados[0]["titulo"] == "Numb"
 
 
 def test_buscar_musica_por_id_sucesso():
@@ -27,7 +29,7 @@ def test_buscar_musica_por_id_sucesso():
     assert response.status_code == 200
     dados = response.json()
     assert dados["id"] == 1
-    assert dados["titulo"] == "Evidências"
+    assert dados["titulo"] == "Numb"
 
 
 def test_buscar_musica_por_id_inexistente():
@@ -36,19 +38,29 @@ def test_buscar_musica_por_id_inexistente():
     assert response.json()["detail"] == "Música com ID 999 não encontrada."
 
 
-def test_cadastrar_nova_musica():
+def test_cadastrar_nova_musica_sucesso():
     nova_musica = {
-        "titulo": "Cheia de Manias",
-        "artista": "Raça Negra",
-        "album": "Raça Negra",
-        "ano": 1992
+        "titulo": "In the End",
+        "artista": "Linkin Park",
+        "album": "Hybrid Theory",
+        "ano": 2000
     }
     response = client.post("/musicas", json=nova_musica)
     assert response.status_code == 201
     dados = response.json()
     assert dados["id"] is not None
-    assert dados["titulo"] == "Cheia de Manias"
-    assert dados["artista"] == "Raça Negra"
+    assert dados["titulo"] == "In the End"
+    assert dados["artista"] == "Linkin Park"
+    assert dados["album"] == "Hybrid Theory"
+    assert dados["ano"] == 2000
+
+
+def test_cadastrar_musica_dados_invalidos():
+    dados_invalidos = {
+        "titulo": "Música Sem Artista"
+    }
+    response = client.post("/musicas", json=dados_invalidos)
+    assert response.status_code == 422
 
 
 def test_atualizar_musica_existente():
@@ -56,10 +68,10 @@ def test_atualizar_musica_existente():
         "titulo": "Tempo Perdido (Ao Vivo)",
         "ano": 1998
     }
-    response = client.put("/musicas/2", json=dados_atualizados)
+    response = client.put("/musicas/3", json=dados_atualizados)
     assert response.status_code == 200
     dados = response.json()
-    assert dados["id"] == 2
+    assert dados["id"] == 3
     assert dados["titulo"] == "Tempo Perdido (Ao Vivo)"
     assert dados["artista"] == "Legião Urbana"
     assert dados["ano"] == 1998
