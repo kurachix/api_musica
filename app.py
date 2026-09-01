@@ -2,13 +2,8 @@ from fastapi import FastAPI, HTTPException, status
 from pydantic import BaseModel
 from typing import List, Optional
 
-app = FastAPI(
-    title="API de Músicas",
-    description="API REST simples para gerenciamento de músicas.",
-    version="1.0.0"
-)
+app = FastAPI(title="API de Músicas")
 
-# Modelo Pydantic para os dados da Música
 class MusicaBase(BaseModel):
     titulo: str
     artista: str
@@ -27,7 +22,6 @@ class MusicaAtualizar(BaseModel):
 class Musica(MusicaBase):
     id: int
 
-
 banco_musicas: List[dict] = [
     {"id": 1, "titulo": "Evidências", "artista": "Chitãozinho & Xororó", "album": "Cowboy do Asfalto", "ano": 1990},
     {"id": 2, "titulo": "Tempo Perdido", "artista": "Legião Urbana", "album": "Dois", "ano": 1986},
@@ -36,15 +30,13 @@ banco_musicas: List[dict] = [
 proximo_id = 4
 
 
-@app.get("/musicas", response_model=List[Musica], summary="Listar todas as músicas")
+@app.get("/musicas", response_model=List[Musica])
 def listar_musicas():
-    """Retorna a lista completa de músicas cadastradas."""
     return banco_musicas
 
 
-@app.get("/musicas/{musica_id}", response_model=Musica, summary="Buscar música por ID")
+@app.get("/musicas/{musica_id}", response_model=Musica)
 def buscar_musica(musica_id: int):
-    """Busca uma música específica pelo seu identificador (ID)."""
     for musica in banco_musicas:
         if musica["id"] == musica_id:
             return musica
@@ -54,9 +46,8 @@ def buscar_musica(musica_id: int):
     )
 
 
-@app.post("/musicas", response_model=Musica, status_code=status.HTTP_201_CREATED, summary="Cadastrar nova música")
+@app.post("/musicas", response_model=Musica, status_code=status.HTTP_201_CREATED)
 def cadastrar_musica(dados: MusicaCriar):
-    """Cadastra uma nova música na base de dados."""
     global proximo_id
     nova_musica = {
         "id": proximo_id,
@@ -70,9 +61,8 @@ def cadastrar_musica(dados: MusicaCriar):
     return nova_musica
 
 
-@app.put("/musicas/{musica_id}", response_model=Musica, summary="Atualizar música existente")
+@app.put("/musicas/{musica_id}", response_model=Musica)
 def atualizar_musica(musica_id: int, dados: MusicaAtualizar):
-    """Atualiza as informações de uma música cadastrada."""
     for musica in banco_musicas:
         if musica["id"] == musica_id:
             if dados.titulo is not None:
@@ -91,9 +81,8 @@ def atualizar_musica(musica_id: int, dados: MusicaAtualizar):
     )
 
 
-@app.delete("/musicas/{musica_id}", status_code=status.HTTP_204_NO_CONTENT, summary="Excluir música")
+@app.delete("/musicas/{musica_id}", status_code=status.HTTP_204_NO_CONTENT)
 def excluir_musica(musica_id: int):
-    """Remove uma música da base de dados pelo seu ID."""
     for index, musica in enumerate(banco_musicas):
         if musica["id"] == musica_id:
             banco_musicas.pop(index)
